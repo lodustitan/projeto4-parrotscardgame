@@ -33,7 +33,7 @@ body {
 }
 .board .timer {
   position: absolute;
-  top: 0;
+  bottom: 4rem;
   left: 0;
   padding: 10px 20px;
   border-radius: 1rem;
@@ -49,10 +49,12 @@ body {
 .board .cards {
   width: 100%;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 .board .cards .Carta {
   position: relative;
+  justify-content: center;
+  align-items: center;
   width: 117px;
   height: 146px;
   margin: 10px 20px;
@@ -64,10 +66,8 @@ body {
 }
 .board .cards .Carta img {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  width: 80%;
+  height: 70%;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }

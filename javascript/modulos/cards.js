@@ -1,7 +1,5 @@
-
-function generateUniqueID(){ 
-    return Math.random().toString(36).substr(2, 5) 
-}
+// introduzido por Richard Durstenfeld no ano de 1964.
+// https://en.wikipedia.org/wiki/Fisher–Yates_shuffle
 function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -10,15 +8,20 @@ function shuffleArray(arr) {
     return arr;
 }
 
+/*
+    Board
 
-
+    Board.adicionarCarta - literalmente adiciona um objeto do tipo "new Card()" a propriedade board_arr. 
+    Board.verificarViradas - faz uma varredura nas cartas, aplicando as regras do jogo.
+    Board.verificarVitoria - faz mais uma varredura para verificar se as condições de vitória foram atendidas e então aplicar a ação de reiniciar jogo.
+*/
 class Board {
     constructor(size, html_source){
-        this.html_source = html_source;
-        this.board_size = Number(size);
-        this.board_arr = new Array();
-        this.viradas = new Array();
-        this.points = 0;
+        this.html_source = html_source; // classe html onde o jogo iniciará.
+        this.board_size = Number(size); // só um limitador.
+        this.board_arr = new Array(); // aqui ficam todas as cartas do game.
+        this.viradas = new Array(); // uma array de 2 indices, que guardará as 2 cartas que forem viradas e testará se são iguais ou diferentes.
+        this.points = 0; // cartas clicadas.
     }
     adicionarCarta(nome, image){
         this.board_arr.push(
@@ -32,7 +35,7 @@ class Board {
         document.querySelector(this.html_source).innerHTML = "";
         shuffled.forEach( old_Newcard =>{ 
             old_Newcard.onclick = ()=>{
-            let essaCarta = boraporra.getCardByID(old_Newcard.dataset.id);
+            let essaCarta = vaiCaralho.getCardByID(old_Newcard.dataset.id);
             // carta só pode ser virada caso não esteja virada ou concluida
                 if(essaCarta.completa === false && essaCarta.podeVirar === true && essaCarta.virada === false){
                     essaCarta.virada = true;
@@ -49,8 +52,8 @@ class Board {
         if(this.viradas.length === 2){
             this.board_arr.forEach(a=>{a.podeVirar = false })
             if ( this.viradas[0].nome === this.viradas[1].nome ){
-                boraporra.getCardByID(this.viradas[0].id).completeCard();
-                boraporra.getCardByID(this.viradas[1].id).completeCard();
+                vaiCaralho.getCardByID(this.viradas[0].id).completeCard();
+                vaiCaralho.getCardByID(this.viradas[1].id).completeCard();
                 this.viradas = [];
                 this.board_arr.forEach(a=>{
                     if(a.completa === true && a.virada === true){
@@ -59,7 +62,7 @@ class Board {
                         a.podeVirar = true;
                     }
                 });
-                this.verificarVitória();
+                this.verificarVitoria();
             }
             else{
                 const verify = ()=>{
@@ -78,7 +81,7 @@ class Board {
             }
         }
     }
-    verificarVitória(){
+    verificarVitoria(){
         let c_viradas = this.board_size; 
         this.board_arr.forEach( a =>{
             if(a.completa === true){
@@ -109,16 +112,24 @@ class Board {
                 })
                 .catch(function(){
                     console.log("A sessão foi encerrada, obrigado por jogar!");
+                    vaiCaralho.gameIsRunning = false;
                 });
             }, 1000)
         }
     }
 }
 
+/*
+    Card
+
+    Card.getID - retorna o id atual da carta.
+    Card.virarCartaHTML - literalmente vira a carta html que a corresponde, ja que estão "linkadas".
+    completeCard - marca ela como completa para que não possa mais ser virada, é um dos requisitos para vitoria.
+*/
 class Card {
     constructor(name, image, classOfElementList){
         // Propriedades das Cards
-        this.id = generateUniqueID(); 
+        this.id = Math.random().toString(36).substr(2, 5); 
         this.nome = name;
         this.virada = false;
         this.podeVirar = true;
